@@ -87,7 +87,7 @@ resource "aws_security_group" "allow_http" {
 resource "aws_instance" "server" {
   count                       = var.instance_count
   ami                         = var.ami
-  instance_type               = var.instance_type # here we define with the variable instance_count how many servers we want to create (see variables.tf)
+  instance_type               = var.instance_type
   key_name                    = aws_key_pair.aws_key.key_name
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.main.id
