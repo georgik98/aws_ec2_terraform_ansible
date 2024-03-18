@@ -3,6 +3,11 @@
 ${addr}
 %{ endfor ~}
 
+[aws_new]
+%{ for addr in ip_addrs ~}
+${addr}
+%{ endfor ~}
+
 [aws_ec2:vars]
 ansible_ssh_user=ubuntu
 ansible_ssh_private_key_file=/Users/gkolev/Projects/aws_ec2_terraform_ansible/.ssh/ansible-ssh-key.pem

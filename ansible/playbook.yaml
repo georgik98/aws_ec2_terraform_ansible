@@ -1,7 +1,11 @@
 ---
-- hosts: aws_ec2
+- hosts: all
   become: yes
   tasks:
+    - name: Update all packages
+      apt:
+        state: latest
+        force_apt_get: yes
     - name: Update apt cache and install Nginx
       apt:
         name: nginx
@@ -19,3 +23,14 @@
         name: nginx
         state: started
         enabled: yes
+    - name: Execute shell script on ec2 machine(s)
+      shell:
+        cmd: |
+          echo '<!doctype html>
+             <html lang="en"><h1>Home page!</h1></br>
+             <h3>(Instance A)</h3>
+             </html>' | sudo tee /var/www/html/index.html
+      register: result
+    - name: Show result
+      debug:
+        msg: "{{ result.stdout }}"
