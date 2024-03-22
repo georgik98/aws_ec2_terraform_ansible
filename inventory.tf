@@ -14,7 +14,7 @@ resource "local_file" "ansible_inventory" {
 
 resource "local_file" "ansible_inventory-2" {
   content = templatefile("inventory.tftpl", {
-    ip_addrs    = [for i in aws_instance.server-2 : i.public_ip]
+    ip_addrs    = [for i in aws_instance.instance : i.public_ip]
     ssh_keyfile = local_sensitive_file.private_key.filename
   })
   filename = format("%s/%s", abspath(path.root), "inventory.ini")

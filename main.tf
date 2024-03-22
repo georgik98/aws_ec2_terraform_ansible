@@ -95,6 +95,7 @@ resource "aws_security_group" "allow_http" {
   }
 }
 
+
 resource "aws_instance" "server" {
   count                       = var.instance_count
   ami                         = var.ami
@@ -109,7 +110,7 @@ resource "aws_instance" "server" {
   }
 }
 
-resource "aws_instance" "server-2" {
+resource "aws_instance" "instance" {
   count                       = var.instance_count
   ami                         = var.ami
   instance_type               = var.instance_type
@@ -127,7 +128,7 @@ resource "aws_lb" "my_alb" {
   name               = "my-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.allow_http.id, aws_security_group.allow_ssh.id]
+  security_groups    = [aws_security_group.allow_ssh.id, aws_security_group.allow_http.id]
   subnets            = [aws_subnet.main.id, aws_subnet.new.id] // at least 2 in 2 different azs
 
   tags = {
@@ -159,4 +160,34 @@ resource "aws_lb_target_group_attachment" "tg_attachment" {
   target_group_arn = aws_lb_target_group.my_tg.arn
   target_id        = element(aws_instance.server.*.id, count.index)
   port             = 80
+}
+
+resource "aws_lb_target_group_attachment" "tg_attachment-1" {
+  count            = length(aws_instance.instance)
+  target_group_arn = aws_lb_target_group.my_tg.arn
+  target_id        = element(aws_instance.instance.*.id, count.index)
+  port             = 80
+}
+
+resource "aws_route53_zone" "example_hosted_zone" {
+  name = "jorkata111.net"
+}
+
+resource "aws_route53_record" "us-battasks" {
+  zone_id = aws_route53_zone.example_hosted_zone.zone_id
+  name    = "eu-battasks"
+  type    = "A"
+  alias {
+    name = aws_lb.my_alb.dns_name
+    zone_id = aws_lb.my_alb.zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "dns" {
+  zone_id         = aws_route53_zone.example_hosted_zone.zone_id
+  name            = "eu-battasks-1"
+  ttl             = 30
+  type            = "CNAME"
+  records         = [aws_lb.my_alb.dns_name]
 }
