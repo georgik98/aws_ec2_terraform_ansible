@@ -178,16 +178,16 @@ resource "aws_route53_record" "us-battasks" {
   name    = "eu-battasks"
   type    = "A"
   alias {
-    name = aws_lb.my_alb.dns_name
-    zone_id = aws_lb.my_alb.zone_id
+    name                   = aws_lb.my_alb.dns_name
+    zone_id                = aws_lb.my_alb.zone_id
     evaluate_target_health = true
   }
 }
 
 resource "aws_route53_record" "dns" {
-  zone_id         = aws_route53_zone.example_hosted_zone.zone_id
-  name            = "eu-battasks-1"
-  ttl             = 30
-  type            = "CNAME"
-  records         = [aws_lb.my_alb.dns_name]
+  zone_id = aws_route53_zone.example_hosted_zone.zone_id
+  name    = "eu-battasks-1"
+  ttl     = 30
+  type    = "CNAME"
+  records = [aws_lb.my_alb.dns_name]
 }
