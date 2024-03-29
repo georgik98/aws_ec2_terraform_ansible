@@ -1,5 +1,5 @@
 ---
-- hosts: aws_ec2
+- hosts: aws_new
   become: yes
   tasks:
     - name: Update all packages
@@ -28,7 +28,7 @@
         cmd: |
           echo '<!doctype html>
              <html lang="en"><h1>Home page!</h1></br>
-             <h3>(Instance A)</h3>
+             <h3>(Instance B)</h3>
              </html>' | sudo tee /var/www/html/index.html
       register: result
     - name: Show result
