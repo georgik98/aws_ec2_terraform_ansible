@@ -19,3 +19,8 @@ variable "instance_type" {
   type    = string
   default = "t2.micro"
 }
+
+variable "jenkins-tag" {
+  type    = list(string)
+  default = ["jenkins-1", "jenkins-2"]
+}
