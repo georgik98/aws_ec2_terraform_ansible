@@ -1,0 +1,21 @@
+---
+- hosts: jenkins
+  become: yes
+  tasks:
+    - name: Install pip3
+      apt:
+        update_cache: yes
+        name: python3-pip
+
+    - name: Install python docker sdk
+      shell: |
+        pip3 install docker
+
+    - name: Install docker
+      apt:
+        name: docker.io
+
+    - name: Start Docker
+      shell: |
+        systemctl start docker
+        systemctl enable docker
